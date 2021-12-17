@@ -22,10 +22,45 @@ function randomizeSelectedBall() {
 	return selectedBall;
 }
 
-function resetGame() {
+function verifiesUsedColors(randomBallColor, usedColors) {
+	let allClear = false;
+	while (allClear === false) {
+		for (let color of usedColors) {
+			if (color === randomBallColor) {
+				let newRandomBallColor = randomColor();
+				return verifiesUsedColors(newRandomBallColor, usedColors);
+			} else {
+				allClear = true;
+			}
+		}
+	}
+	return randomBallColor;
+}
+
+function setAllBallColors() {
+	var usedColors = [];
 	for (let ball of document.querySelectorAll('.ball')) {
 		randomizeBallColor(ball);
-	} if (document.querySelector('.selected') === null) {
+		let currentColor = ball.style.background;
+
+		if (usedColors.length === 0) {
+			usedColors.push(currentColor);
+
+		} else {
+			currentColor = verifiesUsedColors(currentColor, usedColors);
+			ball.style.background = currentColor;
+			usedColors.push(currentColor);
+
+		}
+	}
+}
+
+
+function resetGame() {
+
+	setAllBallColors();
+
+	if (document.querySelector('.selected') === null) {
 		let randomBall = randomizeSelectedBall();
 
 		document.querySelectorAll('.ball')[randomBall].className += ' selected';
